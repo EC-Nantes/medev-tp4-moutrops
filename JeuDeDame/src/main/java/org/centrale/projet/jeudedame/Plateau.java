@@ -21,9 +21,9 @@ public class Plateau {
         for (int i = 0; i<=10;i++){
             for(int j=0;j<=4;j++){
                 if (i%2==0 && j%2==0){
-                    maListePionBlanc.add(new Pion(new Point2D(i,j),"blanc"));
+                    maListePionBlanc.add(new Pion(new Point2D(i,j),"blanc",this));
                 }else if(i%2==1 && j%2==1){
-                    maListePionBlanc.add(new Pion(new Point2D(i,j),"blanc"));
+                    maListePionBlanc.add(new Pion(new Point2D(i,j),"blanc",this));
                 }        
                 
             }
@@ -41,7 +41,7 @@ public class Plateau {
     }
     
     public void affichePlateau(){
-        String[][] plateau = new String[50][50];
+        String[][] plateau = new String[10][10];
         Point2D a =new Point2D();
         for (int i=0;i<50;i++){
             for( int j=0; j<50;j++){
@@ -49,13 +49,13 @@ public class Plateau {
             }
         }
         for (Pion p : maListePionBlanc){
-            int x =p.getPos().getPositionx();
-            int y =p.getPos().getPositiony()+25;
+            int x =p.getPos().getX();
+            int y =p.getPos().getY();
             plateau[x][y] = "B ";    
         }
         for (Pion p : maListePionNoir){
-            int x =p.getPos().getPositionx();
-            int y =p.getPos().getPositiony()+25;
+            int x =p.getPos().getX();
+            int y =p.getPos().getY();
             plateau[x][y] = "N ";
         }
     }
