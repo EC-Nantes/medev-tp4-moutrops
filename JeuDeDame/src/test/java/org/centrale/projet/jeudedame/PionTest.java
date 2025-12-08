@@ -80,7 +80,7 @@ public class PionTest {
         Pion blocage = new Pion(new Point2D(6, 6), "blanc", plateau);
         plateau.getMaListePionBlanc().add(blocage);
 
-        boolean result = pion.doitManger();
+        boolean result = !pion.doitManger();
 
         assertTrue(result, "Le pion ne doit pas pouvoir manger si la case derrière est occupée");
     }
