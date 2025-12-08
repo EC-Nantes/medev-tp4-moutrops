@@ -1,7 +1,6 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  */
-
 package org.centrale.projet.jeudedame;
 
 import java.util.ArrayList;
@@ -20,20 +19,22 @@ public class JeuDeDame {
     public void demarrerNouvellePartie() {
         plateau.vider();
 
-        // Initialisation standard d'un damier 8x8
-        for (int y = 0; y < 3; y++) { // pions noirs
-            for (int x = 0; x < 8; x++) {
-                if ((x + y) % 2 == 1) { // cases noires
-                    Pion p = new Pion( new Point2D(x, y),"Noir", plateau);
+        // Damier 10x10 : lignes 0..9, colonnes 0..9
+        // Pions noirs en haut : lignes 0 à 3
+        for (int y = 0; y < 4; y++) {
+            for (int x = 0; x < 10; x++) {
+                if ((x + y) % 2 == 1) { // cases foncées
+                    Pion p = new Pion(new Point2D(x, y), "Noir", plateau);
                     plateau.getMaListePionNoir().add(p);
                 }
             }
         }
 
-        for (int y = 5; y < 8; y++) { // pions blancs
-            for (int x = 0; x < 8; x++) {
+        // Pions blancs en bas : lignes 6 à 9
+        for (int y = 6; y < 10; y++) {
+            for (int x = 0; x < 10; x++) {
                 if ((x + y) % 2 == 1) {
-                    Pion p = new Pion( new Point2D(x, y),"Blanc", plateau);
+                    Pion p = new Pion(new Point2D(x, y), "Blanc", plateau);
                     plateau.getMaListePionBlanc().add(p);
                 }
             }
@@ -43,7 +44,6 @@ public class JeuDeDame {
     }
 
     // ---------- Gestion des joueurs ----------
-
     public String getJoueurCourant() {
         return joueurCourant;
     }
@@ -57,9 +57,9 @@ public class JeuDeDame {
     }
 
     // ---------- Pions qui doivent manger ----------
-
     /**
-     * Retourne la liste des pions du joueur courant qui ont au moins une prise possible.
+     * Retourne la liste des pions du joueur courant qui ont au moins une prise
+     * possible.
      */
     public List<Pion> getPionsQuiDoiventManger() {
         List<Pion> resultat = new ArrayList<>();
@@ -81,17 +81,21 @@ public class JeuDeDame {
     }
 
     // ---------- Jouer un coup ----------
-
     /**
      * Joue un coup si possible.
-     * @param origine      position de départ du pion
-     * @param destination  position d'arrivée
+     *
+     * @param origine position de départ du pion
+     * @param destination position d'arrivée
      * @return true si le coup est légal et joué, false sinon.
      */
     public boolean jouerCoup(Point2D origine, Point2D destination) {
         Pion pion = plateau.getPion(origine);
-        if (pion == null) return false;
-        if (!pion.getCouleur().equals(joueurCourant)) return false;
+        if (pion == null) {
+            return false;
+        }
+        if (!pion.getCouleur().equals(joueurCourant)) {
+            return false;
+        }
 
         // Vérifier les pions obligés de manger
         List<Pion> pionsObliges = getPionsQuiDoiventManger();
@@ -111,14 +115,14 @@ public class JeuDeDame {
         }
 
         // Destination doit être dans le plateau et vide
-        if (!plateau.estDansLePlateau(dx,dy) || !plateau.caseVide(dx,dy)) {
+        if (!plateau.estDansLePlateau(dx, dy) || !plateau.caseVide(dx, dy)) {
             return false;
         }
 
         if (mouvementSimple) {
             // Autoriser seulement si aucune prise obligatoire
-            if (!Manger && pion.deplace(dx,dy)) {
-                pion.deplace(dx,dy);
+            if (!Manger && pion.deplace(dx, dy)) {
+                pion.deplace(dx, dy);
                 changerJoueur();
                 return true;
             } else {
@@ -131,17 +135,20 @@ public class JeuDeDame {
             Point2D posInter = new Point2D(xInter, yInter);
 
             Pion pionAdverse = plateau.getPion(posInter);
-            if (pionAdverse == null) return false;
-            if (pionAdverse.getCouleur().equals(joueurCourant)) return false;
+            if (pionAdverse == null) {
+                return false;
+            }
+            if (pionAdverse.getCouleur().equals(joueurCourant)) {
+                return false;
+            }
 
             // On peut aussi ajouter un appel à pion.deplacementPriseValide(...)
             // si tu veux séparer logique prise / déplacement
-
             // On déplace le pion
-            pion.deplace(dx,dy);
+            pion.deplace(dx, dy);
             // On retire le pion mangé
             plateau.enleverPion(pionAdverse);
-            
+
             // Vérifier si ce pion peut encore manger (enchaînement de prises)
             if (!pion.doitManger().isEmpty()) {
                 // Même joueur rejoue avec ce pion
@@ -156,16 +163,16 @@ public class JeuDeDame {
     }
 
     // ---------- Fin de partie ----------
-
     /**
-     * Fin de partie si un des joueurs n'a plus de pions
-     * ou ne peut plus jouer.
+     * Fin de partie si un des joueurs n'a plus de pions ou ne peut plus jouer.
      */
     public boolean estFinDePartie() {
         boolean blancSansPion = plateau.getMaListePionBlanc().isEmpty();
         boolean noirSansPion = plateau.getMaListePionNoir().isEmpty();
 
-        if (blancSansPion || noirSansPion) return true;
+        if (blancSansPion || noirSansPion) {
+            return true;
+        }
 
         // Tu peux ajouter ici : vérifier si aucun coup possible pour un joueur.
         return false;
