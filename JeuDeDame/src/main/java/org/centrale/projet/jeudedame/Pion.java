@@ -53,38 +53,34 @@ public class Pion {
 
 
 
-    public List<Pion> doitManger() {
-        List<Pion> maListePion = new ArrayList<>();
-        List<Point2D> maListePionPos = new ArrayList<>();
-        List<Pion> maListePionTotal;
+    public boolean doitManger() {
+    List<Pion> maListePionTotal;
 
-        if ("Blanc".equals(couleur)) {
-            maListePionTotal = plateau.getMaListePionNoir();
-        } else if ("Noir".equals(couleur)) {
-            maListePionTotal = plateau.getMaListePionBlanc();
-        } else {
-            return maListePion; // couleur inconnue
-        }
+    if ("Blanc".equals(couleur)) {
+        maListePionTotal = plateau.getMaListePionNoir();
+    } else if ("Noir".equals(couleur)) {
+        maListePionTotal = plateau.getMaListePionBlanc();
+    } else {
+        return false; // couleur inconnue
+    }
 
-        // Cases adjacentes diagonales autour de ce pion
-        maListePionPos.add(new Point2D(this.position.getX() + 1, this.position.getY() + 1));
-        maListePionPos.add(new Point2D(this.position.getX() - 1, this.position.getY() + 1));
-        maListePionPos.add(new Point2D(this.position.getX() + 1, this.position.getY() - 1));
-        maListePionPos.add(new Point2D(this.position.getX() - 1, this.position.getY() - 1));
+    // Parcourir tous les pions adverses
+    for (Pion pionAdv : maListePionTotal) {
+        int dx = pionAdv.getPosition().getX() - this.position.getX();
+        int dy = pionAdv.getPosition().getY() - this.position.getY();
 
-        // Parcourir TOUS les pions adverses
-        for (Pion pionAdv : maListePionTotal) {
-            if (maListePionPos.contains(pionAdv.getPosition())) {
+        // Il faut que le pion adverse soit sur une des 4 diagonales adjacentes
+        if (Math.abs(dx) == 1 && Math.abs(dy) == 1) {
 
-                if (peutSauterParDessus(pionAdv)) {
-                    maListePion.add(pionAdv);
-                }
-
+            if (peutSauterParDessus(pionAdv)) {
+                return true; 
             }
         }
-
-        return maListePion;
     }
+
+    return false; // aucune prise trouvée
+}
+
 
     private boolean peutSauterParDessus(Pion pionAdv) {
         int dx = pionAdv.getPosition().getX() - this.position.getX();

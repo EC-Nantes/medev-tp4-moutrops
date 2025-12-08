@@ -62,105 +62,126 @@ public class JeuDeDame {
      * possible.
      */
     public List<Pion> getPionsQuiDoiventManger() {
-        List<Pion> resultat = new ArrayList<>();
+    List<Pion> resultat = new ArrayList<>();
 
-        List<Pion> listePions;
-        if ("Blanc".equals(joueurCourant)) {
-            listePions = plateau.getMaListePionBlanc();
-        } else {
-            listePions = plateau.getMaListePionNoir();
-        }
-
-        for (Pion p : listePions) {
-            if (!p.doitManger().isEmpty()) {
-                resultat.add(p);
-            }
-        }
-
-        return resultat;
+    List<Pion> listePions;
+    if ("Blanc".equals(joueurCourant)) {
+        listePions = plateau.getMaListePionBlanc();
+    } else {
+        listePions = plateau.getMaListePionNoir();
     }
 
-    // ---------- Jouer un coup ----------
-    /**
-     * Joue un coup si possible.
-     *
-     * @param origine position de départ du pion
-     * @param destination position d'arrivée
-     * @return true si le coup est légal et joué, false sinon.
-     */
+    for (Pion p : listePions) {
+        if (p.doitManger()) {   // ⭐ maintenant doitManger() renvoie boolean
+            resultat.add(p);
+        }
+    }
+
+    return resultat;
+}
+
+
     public boolean jouerCoup(Point2D origine, Point2D destination) {
-        Pion pion = plateau.getPion(origine);
-        if (pion == null) {
-            return false;
-        }
-        if (!pion.getCouleur().equals(joueurCourant)) {
-            return false;
-        }
-
-        // Vérifier les pions obligés de manger
-        List<Pion> pionsObliges = getPionsQuiDoiventManger();
-        boolean Manger = !pionsObliges.isEmpty();
-
-        // Vérifier si ce déplacement est une prise ou un simple déplacement
-        int dx = destination.getX() - origine.getX();
-        int dy = destination.getY() - origine.getY();
-
-        boolean mouvementSimple = Math.abs(dx) == 1 && Math.abs(dy) == 1;
-
-        boolean mouvementPrise = Math.abs(dx) == 2 && Math.abs(dy) == 2;
-
-        // S'il y a obligation de manger, on refuse les mouvements simples
-        if (Manger && !mouvementPrise) {
-            return false;
-        }
-
-        // Destination doit être dans le plateau et vide
-        if (!plateau.estDansLePlateau(dx, dy) || !plateau.caseVide(dx, dy)) {
-            return false;
-        }
-
-        if (mouvementSimple) {
-            // Autoriser seulement si aucune prise obligatoire
-            if (!Manger && pion.deplace(dx, dy)) {
-                pion.deplace(dx, dy);
-                changerJoueur();
-                return true;
-            } else {
-                return false;
-            }
-        } else if (mouvementPrise) {
-            // Case intermédiaire (pion à manger)
-            int xInter = (origine.getX() + destination.getX()) / 2;
-            int yInter = (origine.getY() + destination.getY()) / 2;
-            Point2D posInter = new Point2D(xInter, yInter);
-
-            Pion pionAdverse = plateau.getPion(posInter);
-            if (pionAdverse == null) {
-                return false;
-            }
-            if (pionAdverse.getCouleur().equals(joueurCourant)) {
-                return false;
-            }
-
-            // On peut aussi ajouter un appel à pion.deplacementPriseValide(...)
-            // si tu veux séparer logique prise / déplacement
-            // On déplace le pion
-            pion.deplace(dx, dy);
-            // On retire le pion mangé
-            plateau.enleverPion(pionAdverse);
-
-            // Vérifier si ce pion peut encore manger (enchaînement de prises)
-            if (!pion.doitManger().isEmpty()) {
-                // Même joueur rejoue avec ce pion
-                return true;
-            } else {
-                changerJoueur();
-                return true;
-            }
-        }
-
+    Pion pion = plateau.getPion(origine);
+    System.out.println("Test pion = " + pion);
+    
+    // 1) Il faut un pion sur la case d'origine
+    if (pion == null) {
+        System.out.println("Pas de pion sur la case d'origine");
         return false;
     }
+
+    // 2) Le pion doit être de la couleur du joueur courant
+    if (!pion.getCouleur().equals(joueurCourant)) {
+        System.out.println("Ce n'est pas le tour de cette couleur");
+        return false;
+    }
+
+    // 3) Obligation de manger ?
+    List<Pion> pionsObliges = getPionsQuiDoiventManger();
+    boolean doitManger = !pionsObliges.isEmpty();
+    System.out.println("il doit = " + doitManger);
+
+    int dx = destination.getX() - origine.getX();
+    int dy = destination.getY() - origine.getY();
+
+    boolean mouvementSimple = Math.abs(dx) == 1 && Math.abs(dy) == 1;
+    boolean mouvementPrise  = Math.abs(dx) == 2 && Math.abs(dy) == 2;
+
+    // 4) S'il doit manger, on refuse les mouvements simples
+    if (doitManger && !mouvementPrise) {
+        System.out.println("Un pion doit manger, déplacement simple interdit");
+        return false;
+    }
+
+    // 5) Destination doit être dans le plateau et vide
+    if (!plateau.estDansLePlateau(destination.getX(), destination.getY())
+            || !plateau.caseVide(destination.getX(), destination.getY())) {
+        System.out.println("Destination hors plateau ou occupée");
+        return false;
+    }
+
+    // 6) Mouvement simple (sans prise)
+    if (mouvementSimple) {
+        if (!doitManger) {
+            // deplace(dx, dy) est un déplacement RELATIF
+            boolean ok = pion.deplace(dx, dy);
+            if (ok) {
+                changerJoueur();
+                System.out.println("Déplacement simple effectué");
+                return true;
+            } else {
+                System.out.println("Déplacement simple refusé par deplace()");
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    // 7) Mouvement de prise
+    if (mouvementPrise) {
+        int xInter = (origine.getX() + destination.getX()) / 2;
+        int yInter = (origine.getY() + destination.getY()) / 2;
+        Point2D posInter = new Point2D(xInter, yInter);
+
+        Pion pionAdverse = plateau.getPion(posInter);
+        if (pionAdverse == null) {
+            System.out.println("Aucun pion à manger sur la case intermédiaire");
+            return false;
+        }
+        if (pionAdverse.getCouleur().equals(joueurCourant)) {
+            System.out.println("Le pion intermédiaire est de la même couleur");
+            return false;
+        }
+
+        // Déplacement du pion (relatif)
+        boolean ok = pion.deplace(dx, dy);
+        if (!ok) {
+            System.out.println("Le déplacement de prise a échoué");
+            return false;
+        }
+
+        // Retirer le pion mangé
+        plateau.enleverPion(pionAdverse);
+
+        // 8) Enchaînement de prises possible ?
+        if (pion.doitManger()) {   // ⬅️ ici l'ancienne version faisait .isEmpty()
+            System.out.println("Le même pion peut encore manger");
+            // même joueur rejoue ce pion
+            return true;
+        } else {
+            changerJoueur();
+            return true;
+        }
+    }
+
+    // 9) Sinon, mouvement illégal
+    System.out.println("Mouvement ni simple ni de prise");
+    return false;
+}
+
+
 
     // ---------- Fin de partie ----------
     /**

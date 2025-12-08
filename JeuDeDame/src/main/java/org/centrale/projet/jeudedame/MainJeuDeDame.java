@@ -52,7 +52,7 @@ public class MainJeuDeDame {
 
                 Point2D origine = new Point2D(xOrig, yOrig);
                 Point2D destination = new Point2D(xDest, yDest);
-
+                
                 boolean ok = jeu.jouerCoup(origine, destination);
                 if (!ok) {
                     System.out.println("Coup illégal, réessaie.\n");
