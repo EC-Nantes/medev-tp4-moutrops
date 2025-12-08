@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class Plateau {
     ArrayList<Pion> maListePionBlanc = new ArrayList<>();
     ArrayList<Pion> maListePionNoir = new ArrayList<>();
-    
+ 
     
     
     public void creerPlateau() {
