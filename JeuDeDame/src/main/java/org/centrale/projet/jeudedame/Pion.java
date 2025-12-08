@@ -28,25 +28,28 @@ public class Pion {
     
     
     
-    public void deplace(int a){
-        if (this.couleur=="blanc"){
-            if (a==1){
-                this.position.setY(this.position.getY()-1);
-                this.position.setX(this.position.getX()+1);    
-            }else{
-                this.position.setY(this.position.getY()+1);
-                this.position.setX(this.position.getX()+1);
-            }
-        }else{
-            if (a==1){
-                this.position.setY(this.position.getY()-1);
-                this.position.setX(this.position.getX()-1);    
-            }else{
-                this.position.setY(this.position.getY()+1);
-                this.position.setX(this.position.getX()-1);
-            }
-        }
+    public boolean deplace(int dx, int dy) {
+    int newX = this.position.getX() + dx;
+    int newY = this.position.getY() + dy;
+
+    // Vérifier si la case est dans le plateau
+    if (!plateau.estDansLePlateau(newX, newY)) {
+        return false;
     }
+
+    // Vérifier que la case est vide
+    if (!plateau.caseVide(newX, newY)) {
+        return false;
+    }
+
+    // Déplacement possible
+    this.position.setX(newX);
+    this.position.setY(newY);
+
+    return true;
+}
+
+
 
 
 
