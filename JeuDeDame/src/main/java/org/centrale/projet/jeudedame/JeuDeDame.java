@@ -10,6 +10,8 @@ public class JeuDeDame {
 
     private Plateau plateau;
     private String joueurCourant; // "Blanc" ou "Noir"
+    private final String blanc = "Blanc"; 
+    private final String noir = "Noir";
 
     public JeuDeDame() {
         this.plateau = new Plateau();
@@ -18,13 +20,14 @@ public class JeuDeDame {
 
     public void demarrerNouvellePartie() {
         plateau.vider();
+        String Blanc = "Blanc";
 
         // Damier 10x10 : lignes 0..9, colonnes 0..9
         // Pions noirs en haut : lignes 0 à 3
         for (int y = 0; y < 4; y++) {
             for (int x = 0; x < 10; x++) {
                 if ((x + y) % 2 == 1) { // cases foncées
-                    Pion p = new Pion(new Point2D(x, y), "Noir", plateau);
+                    Pion p = new Pion(new Point2D(x, y), noir, plateau);
                     plateau.getMaListePionNoir().add(p);
                 }
             }
@@ -34,25 +37,24 @@ public class JeuDeDame {
         for (int y = 6; y < 10; y++) {
             for (int x = 0; x < 10; x++) {
                 if ((x + y) % 2 == 1) {
-                    Pion p = new Pion(new Point2D(x, y), "Blanc", plateau);
+                    Pion p = new Pion(new Point2D(x, y), blanc, plateau);
                     plateau.getMaListePionBlanc().add(p);
                 }
             }
         }
 
-        joueurCourant = "Blanc"; // Blanc commence
+        joueurCourant = blanc; 
     }
 
-    // ---------- Gestion des joueurs ----------
     public String getJoueurCourant() {
         return joueurCourant;
     }
 
     private void changerJoueur() {
-        if ("Blanc".equals(joueurCourant)) {
-            joueurCourant = "Noir";
+        if (blanc.equals(joueurCourant)) {
+            joueurCourant = noir;
         } else {
-            joueurCourant = "Blanc";
+            joueurCourant = blanc;
         }
     }
 
@@ -65,7 +67,7 @@ public class JeuDeDame {
     List<Pion> resultat = new ArrayList<>();
 
     List<Pion> listePions;
-    if ("Blanc".equals(joueurCourant)) {
+    if (blanc.equals(joueurCourant)) {
         listePions = plateau.getMaListePionBlanc();
     } else {
         listePions = plateau.getMaListePionNoir();
@@ -85,19 +87,16 @@ public class JeuDeDame {
     Pion pion = plateau.getPion(origine);
     System.out.println("Test pion = " + pion);
     
-    // 1) Il faut un pion sur la case d'origine
     if (pion == null) {
         System.out.println("Pas de pion sur la case d'origine");
         return false;
     }
 
-    // 2) Le pion doit être de la couleur du joueur courant
     if (!pion.getCouleur().equals(joueurCourant)) {
         System.out.println("Ce n'est pas le tour de cette couleur");
         return false;
     }
 
-    // 3) Obligation de manger ?
     List<Pion> pionsObliges = getPionsQuiDoiventManger();
     boolean doitManger = !pionsObliges.isEmpty();
     System.out.println("il doit = " + doitManger);
@@ -105,8 +104,8 @@ public class JeuDeDame {
     int dx = destination.getX() - origine.getX();
     int dy = destination.getY() - origine.getY();
 
-    boolean mouvementSimple = Math.abs(dx) == 1 && Math.abs(dy) == 1;
-    boolean mouvementPrise  = Math.abs(dx) == 2 && Math.abs(dy) == 2;
+    boolean mouvementSimple = isMouvementSimple(dx,dy);
+    boolean mouvementPrise  = isMouvementPrise(dx,dy);
 
     // 4) S'il doit manger, on refuse les mouvements simples
     if (doitManger && !mouvementPrise) {
@@ -166,7 +165,7 @@ public class JeuDeDame {
         plateau.enleverPion(pionAdverse);
 
         // 8) Enchaînement de prises possible ?
-        if (pion.doitManger()) {   // ⬅️ ici l'ancienne version faisait .isEmpty()
+        if (pion.doitManger()) {  
             System.out.println("Le même pion peut encore manger");
             // même joueur rejoue ce pion
             return true;
@@ -202,4 +201,12 @@ public class JeuDeDame {
     public Plateau getPlateau() {
         return plateau;
     }
+    
+    public boolean isMouvementSimple(int dx, int dy){
+    return Math.abs(dx) == 1 && Math.abs(dy) == 1;
+    }
+    
+    public boolean isMouvementPrise(int dx,int dy){
+    return Math.abs(dx) == 2 && Math.abs(dy) == 2;}
+    
 }
