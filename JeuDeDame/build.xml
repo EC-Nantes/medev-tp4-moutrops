@@ -20,8 +20,8 @@
     <target name="build" description="Build the application"
     depends = "checkDependencies" if="src.available">
     <echo message="Building application..."/>
-    <javac srcdir="${src.location}" destdir="${classes.location}"
-        includeAntRuntime="false"/>
+    <javac srcdir="${src.location}/main" destdir="${classes.location}"
+        includeantruntime="false"/>
     <echo message="Done"/>
     </target>
 
@@ -52,5 +52,50 @@
             </javadoc>
     <echo message = "Creation fini"/>
     </target>
+
+
+    <path id="junit.classpath">
+  <fileset dir="${basedir}/lib">
+    <include name="**/*.jar"/>
+  </fileset>
+</path>
+
+<path id="main.classpath">
+  <pathelement path="target/classes"/>
+</path>
+
+<path id="test.compile.classpath">
+  <path refid="main.classpath"/>
+  <path refid="junit.classpath"/>
+</path>
+
+
+    <target name="compile-tests" depends="build">
+  <mkdir dir="target/test-classes"/>
+  <javac srcdir="src/test/java" destdir="target/test-classes" includeantruntime="false">
+    <classpath refid="test.compile.classpath"/>
+  </javac>
+</target>
+
+<target name="test" depends="compile-tests" description="Lancement des tests unitaires">
+  <echo message="Lancement des tests unitaires..."/>
+
+  <java classname="org.junit.platform.console.ConsoleLauncher"
+        fork="true"
+        failonerror="true">
+
+    <classpath>
+      <pathelement path="target/classes"/>
+      <pathelement path="target/test-classes"/>
+      <path refid="junit.classpath"/>
+    </classpath>
+
+    <arg value="execute"/>
+    <arg value="--scan-classpath"/>
+  </java>
+</target>
+
+
+
 </project>
 
