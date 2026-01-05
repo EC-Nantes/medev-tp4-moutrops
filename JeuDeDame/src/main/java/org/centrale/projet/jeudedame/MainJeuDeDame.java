@@ -3,8 +3,16 @@ package org.centrale.projet.jeudedame;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ *
+ * @author Max
+ */
 public class MainJeuDeDame {
 
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         JeuDeDame jeu = new JeuDeDame();
         Scanner sc = new Scanner(System.in);

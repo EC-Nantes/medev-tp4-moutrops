@@ -6,6 +6,10 @@ package org.centrale.projet.jeudedame;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ * @author Max
+ */
 public class JeuDeDame {
 
     private Plateau plateau;
@@ -13,11 +17,17 @@ public class JeuDeDame {
     private final String blanc = "Blanc"; 
     private final String noir = "Noir";
 
+    /**
+     *
+     */
     public JeuDeDame() {
         this.plateau = new Plateau();
         demarrerNouvellePartie();
     }
 
+    /**
+     *
+     */
     public void demarrerNouvellePartie() {
         plateau.vider();
         String Blanc = "Blanc";
@@ -46,6 +56,10 @@ public class JeuDeDame {
         joueurCourant = blanc; 
     }
 
+    /**
+     *
+     * @return
+     */
     public String getJoueurCourant() {
         return joueurCourant;
     }
@@ -62,6 +76,7 @@ public class JeuDeDame {
     /**
      * Retourne la liste des pions du joueur courant qui ont au moins une prise
      * possible.
+     * @return 
      */
     public List<Pion> getPionsQuiDoiventManger() {
     List<Pion> resultat = new ArrayList<>();
@@ -82,7 +97,12 @@ public class JeuDeDame {
     return resultat;
 }
 
-
+    /**
+     *
+     * @param origine
+     * @param destination
+     * @return
+     */
     public boolean jouerCoup(Point2D origine, Point2D destination) {
     Pion pion = plateau.getPion(origine);
     System.out.println("Test pion = " + pion);
@@ -185,6 +205,7 @@ public class JeuDeDame {
     // ---------- Fin de partie ----------
     /**
      * Fin de partie si un des joueurs n'a plus de pions ou ne peut plus jouer.
+     * @return 
      */
     public boolean estFinDePartie() {
         boolean blancSansPion = plateau.getMaListePionBlanc().isEmpty();
@@ -198,14 +219,30 @@ public class JeuDeDame {
         return false;
     }
 
+    /**
+     *
+     * @return
+     */
     public Plateau getPlateau() {
         return plateau;
     }
     
+    /**
+     *
+     * @param dx
+     * @param dy
+     * @return
+     */
     public boolean isMouvementSimple(int dx, int dy){
     return Math.abs(dx) == 1 && Math.abs(dy) == 1;
     }
     
+    /**
+     *
+     * @param dx
+     * @param dy
+     * @return
+     */
     public boolean isMouvementPrise(int dx,int dy){
     return Math.abs(dx) == 2 && Math.abs(dy) == 2;}
     

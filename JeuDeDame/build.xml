@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="JeuDeDame" default="build" basedir=".">
+    <description> This is a default build.xml.</description>
+    <target name="checkDependencies"
+            description="Check if dependencies are satisfied">
+            <property name="src.location" location="src"/>
+            <property name="classes.location" location="target/classes"/>
+            <echo message="Source directory is ${src.location}"/>
+            <echo message="Classes directory is ${classes.location}"/>
+            <condition property="src.available">
+                <and>
+                        <available file="${src.location}" type="dir"/>
+                        <available file="${classes.location}" type="dir"/>
+                </and>
+                </condition>
+                        </target>
+
+
+    <target name="build" description="Build the application"
+    depends = "checkDependencies" if="src.available">
+    <echo message="Building application..."/>
+    <javac srcdir="${src.location}" destdir="${classes.location}"
+        includeAntRuntime="false"/>
+    <echo message="Done"/>
+    </target>
+
+    <target name="jar" description="Création d'un jar"  
+    depends = "build" if="src.available">
+    <echo message="Creation d'un jar ..."/>
+    <jar destfile="target/app.jar" >
+        <fileset dir="${classes.location}">
+            <exclude name="**/*Test.class"/>
+        </fileset>
+
+        <manifest>
+            <attribute name="Main-Class"
+                value="org.centrale.projet.jeudedame.MainJeuDeDame"/>
+        </manifest>
+        </jar>
+    <echo message="Le fichier est créé"/>
+    
+    </target>
+
+    <target name="javadoc" description="Creation de la javadoc">
+    <echo message = "Creation de la javadoc..."/>
+        <javadoc sourcepath="src/main/java" 
+            destdir="target/doc">
+            <fileset dir="src" >
+            <include name="**"/>
+            </fileset>
+            </javadoc>
+    <echo message = "Creation fini"/>
+    </target>
+</project>
+

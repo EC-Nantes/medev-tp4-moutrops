@@ -14,8 +14,9 @@ public class Plateau {
     ArrayList<Pion> maListePionBlanc = new ArrayList<>();
     ArrayList<Pion> maListePionNoir = new ArrayList<>();
  
-    
-    
+    /**
+     *
+     */
     public void creerPlateau() {
         maListePionBlanc.clear();
         maListePionNoir.clear();
@@ -39,6 +40,9 @@ public class Plateau {
         }
     }
     
+    /**
+     *
+     */
     public void affichePlateau(){
         String[][] plateau = new String[50][50];
         Point2D a = new Point2D();
@@ -59,27 +63,54 @@ public class Plateau {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<Pion> getMaListePionBlanc() {
         return maListePionBlanc;
     }
 
+    /**
+     *
+     * @param maListePionBlanc
+     */
     public void setMaListePionBlanc(ArrayList<Pion> maListePionBlanc) {
         this.maListePionBlanc = maListePionBlanc;
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<Pion> getMaListePionNoir() {
         return maListePionNoir;
     }
 
+    /**
+     *
+     * @param maListePionNoir
+     */
     public void setMaListePionNoir(ArrayList<Pion> maListePionNoir) {
         this.maListePionNoir = maListePionNoir;
     }
     
-        public boolean estDansLePlateau(int x, int y) {
+    /**
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    public boolean estDansLePlateau(int x, int y) {
         return x >= 0 && x < 10 && y >= 0 && y < 10;
     }
     
-        public Pion getPion(Point2D pos) {
+    /**
+     *
+     * @param pos
+     * @return
+     */
+    public Pion getPion(Point2D pos) {
         for (Pion p : maListePionBlanc) {
             if (p.getPosition().getX() == pos.getX()
                     && p.getPosition().getY() == pos.getY()) {
@@ -95,6 +126,10 @@ public class Plateau {
         return null;
     }
 
+    /**
+     *
+     * @param pion
+     */
     public void enleverPion(Pion pion) {
         if ("blanc".equals(pion.getCouleur())) {
             maListePionBlanc.remove(pion);
@@ -103,7 +138,13 @@ public class Plateau {
         }
     }
 
-   public boolean caseVide(int x, int y) {
+    /**
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    public boolean caseVide(int x, int y) {
     if (!estDansLePlateau(x, y)) {
         return false;
     }
@@ -124,7 +165,10 @@ public class Plateau {
     return true; 
 }
 
-   public void vider() {
+    /**
+     *
+     */
+    public void vider() {
     getMaListePionBlanc().clear();
     getMaListePionNoir().clear();
 }

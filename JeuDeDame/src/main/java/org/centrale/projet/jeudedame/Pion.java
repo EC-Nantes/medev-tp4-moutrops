@@ -16,18 +16,30 @@ public class Pion {
     String couleur;
     Plateau plateau;
 
+    /**
+     *
+     * @param position
+     * @param couleur
+     * @param plateau
+     */
     public Pion(Point2D position, String couleur,Plateau plateau) {
         this.position = position;
         this.couleur = couleur;
         this.plateau = plateau;
     }
 
+    /**
+     *
+     */
     public Pion() {
     }
     
-    
-    
-    
+    /**
+     *
+     * @param dx
+     * @param dy
+     * @return
+     */
     public boolean deplace(int dx, int dy) {
     int newX = this.position.getX() + dx;
     int newY = this.position.getY() + dy;
@@ -49,10 +61,10 @@ public class Pion {
     return true;
 }
 
-
-
-
-
+    /**
+     *
+     * @return
+     */
     public boolean doitManger() {
     List<Pion> maListePionTotal;
 
@@ -95,26 +107,50 @@ public class Pion {
                 && plateau.caseVide(xDerriere, yDerriere);
     }
 
+    /**
+     *
+     * @return
+     */
     public Point2D getPosition() {
         return position;
     }
 
+    /**
+     *
+     * @param pos
+     */
     public void setPosition(Point2D pos) {
         this.position = pos;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getCouleur() {
         return couleur;
     }
 
+    /**
+     *
+     * @param couleur
+     */
     public void setCouleur(String couleur) {
         this.couleur = couleur;
     }
 
+    /**
+     *
+     * @return
+     */
     public Plateau getPlateau() {
         return plateau;
     }
 
+    /**
+     *
+     * @param plateau
+     */
     public void setPlateau(Plateau plateau) {
         this.plateau = plateau;
     }
