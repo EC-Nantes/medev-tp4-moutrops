@@ -13,6 +13,7 @@ public class MainJeuDeDame {
      *
      * @param args
      */
+    //Je veux voir la note
     public static void main(String[] args) {
         JeuDeDame jeu = new JeuDeDame();
         Scanner sc = new Scanner(System.in);
