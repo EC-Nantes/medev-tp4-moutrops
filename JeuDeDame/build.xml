@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="JeuDeDame" default="build" basedir=".">
+    <description> This is a default build.xml.</description>
+    <target name="checkDependencies"
+            description="Check if dependencies are satisfied">
+            <property name="src.location" location="src"/>
+            <property name="classes.location" location="target/classes"/>
+            <echo message="Source directory is ${src.location}"/>
+            <echo message="Classes directory is ${classes.location}"/>
+            <condition property="src.available">
+                <and>
+                        <available file="${src.location}" type="dir"/>
+                        <available file="${classes.location}" type="dir"/>
+                </and>
+                </condition>
+                        </target>
+
+
+    <target name="build" description="Build the application"
+    depends = "checkDependencies" if="src.available">
+    <echo message="Building application..."/>
+    <javac srcdir="${src.location}/main" destdir="${classes.location}"
+        includeantruntime="false"/>
+    <echo message="Done"/>
+    </target>
+
+    <target name="jar" description="Création d'un jar"  
+    depends = "build" if="src.available">
+    <echo message="Creation d'un jar ..."/>
+    <jar destfile="target/app.jar" >
+        <fileset dir="${classes.location}">
+            <exclude name="**/*Test.class"/>
+        </fileset>
+
+        <manifest>
+            <attribute name="Main-Class"
+                value="org.centrale.projet.jeudedame.MainJeuDeDame"/>
+        </manifest>
+        </jar>
+    <echo message="Le fichier est créé"/>
+    
+    </target>
+
+    <target name="javadoc" description="Creation de la javadoc">
+    <echo message = "Creation de la javadoc..."/>
+        <javadoc sourcepath="src/main/java" 
+            destdir="target/doc">
+            <fileset dir="src" >
+            <include name="**"/>
+            </fileset>
+            </javadoc>
+    <echo message = "Creation fini"/>
+    </target>
+
+
+    <path id="junit.classpath">
+  <fileset dir="${basedir}/lib">
+    <include name="**/*.jar"/>
+  </fileset>
+</path>
+
+<path id="main.classpath">
+  <pathelement path="target/classes"/>
+</path>
+
+<path id="test.compile.classpath">
+  <path refid="main.classpath"/>
+  <path refid="junit.classpath"/>
+</path>
+
+
+    <target name="compile-tests" depends="build">
+  <mkdir dir="target/test-classes"/>
+  <javac srcdir="src/test/java" destdir="target/test-classes" includeantruntime="false">
+    <classpath refid="test.compile.classpath"/>
+  </javac>
+</target>
+
+<target name="test" depends="compile-tests" description="Lancement des tests unitaires">
+  <echo message="Lancement des tests unitaires..."/>
+
+  <java classname="org.junit.platform.console.ConsoleLauncher"
+        fork="true"
+        failonerror="true">
+
+    <classpath>
+      <pathelement path="target/classes"/>
+      <pathelement path="target/test-classes"/>
+      <path refid="junit.classpath"/>
+    </classpath>
+
+    <arg value="execute"/>
+    <arg value="--scan-classpath"/>
+  </java>
+</target>
+
+
+
+</project>
+
